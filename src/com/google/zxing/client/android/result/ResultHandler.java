@@ -18,14 +18,14 @@ public abstract class ResultHandler<T extends ParsedResult> {
     private final Context mContext;
     private final T mParsedResult;
     private final Result mRawResult;
-    private final Uri mPhotoUri;
+    //private final Uri mPhotoUri;
 
     public ResultHandler(Context context, T parsedResult,
-            Result result, Uri photoUri) {
+            Result result) {//, Uri photoUri) {
         mContext = context;
         mParsedResult = parsedResult;
         mRawResult = result;
-        mPhotoUri = photoUri;
+        //mPhotoUri = photoUri;
     }
 
     public Context getContext() {
@@ -40,14 +40,36 @@ public abstract class ResultHandler<T extends ParsedResult> {
         return mRawResult;
     }
 
+    /*
     public Uri getPhotoUri() {
         return mPhotoUri;
     }
+    */
 
     public abstract List<CardPresenter> getCardResults();
 
     public static PendingIntent createPendingIntent(Context context,
             Intent intent) {
         return PendingIntent.getActivity(context, 0, intent, 0);
+    }
+
+    public Object getType() {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    public int getDisplayTitle() {
+      // TODO Auto-generated method stub
+      return 0;
+    }
+
+    public CharSequence getDisplayContents() {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    public boolean areContentsSecure() {
+      // TODO Auto-generated method stub
+      return false;
     }
 }

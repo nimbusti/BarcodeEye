@@ -26,7 +26,7 @@ import android.util.Log;
  * Finishes an activity after a period of inactivity if the device is on battery
  * power.
  */
-public final class InactivityTimer {
+final class InactivityTimer {
 
     private static final String TAG = InactivityTimer.class.getSimpleName();
 
@@ -35,16 +35,16 @@ public final class InactivityTimer {
     private final Activity activity;
     private final BroadcastReceiver powerStatusReceiver;
     private boolean registered;
-    private AsyncTask<?, ?, ?> inactivityTask;
+    private AsyncTask<?,?,?> inactivityTask;
 
-    public InactivityTimer(Activity activity) {
+    InactivityTimer(Activity activity) {
         this.activity = activity;
         powerStatusReceiver = new PowerStatusReceiver();
         registered = false;
         onActivity();
     }
 
-    public synchronized void onActivity() {
+    synchronized void onActivity() {
         cancel();
         inactivityTask = new InactivityAsyncTask();
         inactivityTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -64,22 +64,21 @@ public final class InactivityTimer {
         if (registered) {
             Log.w(TAG, "PowerStatusReceiver was already registered?");
         } else {
-            activity.registerReceiver(powerStatusReceiver, new IntentFilter(
-                    Intent.ACTION_BATTERY_CHANGED));
+            activity.registerReceiver(powerStatusReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             registered = true;
         }
         onActivity();
     }
 
     private synchronized void cancel() {
-        AsyncTask<?, ?, ?> task = inactivityTask;
+        AsyncTask<?,?,?> task = inactivityTask;
         if (task != null) {
             task.cancel(true);
             inactivityTask = null;
         }
     }
 
-    public void shutdown() {
+    void shutdown() {
         cancel();
     }
 
@@ -88,8 +87,7 @@ public final class InactivityTimer {
         public void onReceive(Context context, Intent intent) {
             if (Intent.ACTION_BATTERY_CHANGED.equals(intent.getAction())) {
                 // 0 indicates that we're on battery
-                boolean onBatteryNow = intent.getIntExtra(
-                        BatteryManager.EXTRA_PLUGGED, -1) <= 0;
+                boolean onBatteryNow = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) <= 0;
                 if (onBatteryNow) {
                     InactivityTimer.this.onActivity();
                 } else {
@@ -99,8 +97,7 @@ public final class InactivityTimer {
         }
     }
 
-    private final class InactivityAsyncTask extends
-            AsyncTask<Object, Object, Object> {
+    private final class InactivityAsyncTask extends AsyncTask<Object, Object, Object> {
         @Override
         protected Object doInBackground(Object... objects) {
             try {

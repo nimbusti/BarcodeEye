@@ -11,15 +11,19 @@ import com.github.barcodeeye.CardPresenter;
 import com.google.zxing.Result;
 import com.google.zxing.client.result.ParsedResult;
 
-public class TextResultHandler extends ResultHandler<ParsedResult> {
+/**
+ * This class handles TextParsedResult as well as unknown formats. It's the fallback handler.
+ *
+ * @author dswitkin@google.com (Daniel Switkin)
+ */
+public final class TextResultHandler extends ResultHandler<ParsedResult> {
 
     private static final String TAG = TextResultHandler.class.getSimpleName();
 
     private static final String SEARCH_URL = "https://www.google.com/search?q=%s";
 
-    public TextResultHandler(Context context, ParsedResult parsedResult,
-            Result result, Uri photoUri) {
-        super(context, parsedResult, result, photoUri);
+    public TextResultHandler(Context context, ParsedResult parsedResult, Result result) {//, Uri photoUri) {
+        super(context, parsedResult, result);//, photoUri);
     }
 
     @Override

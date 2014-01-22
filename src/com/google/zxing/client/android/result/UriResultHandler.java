@@ -11,11 +11,15 @@ import com.github.barcodeeye.CardPresenter;
 import com.google.zxing.Result;
 import com.google.zxing.client.result.URIParsedResult;
 
-public class UriResultHandler extends ResultHandler<URIParsedResult> {
+/**
+ * Offers appropriate actions for URLS.
+ *
+ * @author dswitkin@google.com (Daniel Switkin)
+ */
+public final class URIResultHandler extends ResultHandler<URIParsedResult> {
 
-    public UriResultHandler(Context context, URIParsedResult parsedResult,
-            Result result, Uri photoUri) {
-        super(context, parsedResult, result, photoUri);
+    public URIResultHandler(Context context, URIParsedResult parsedResult, Result result) {//, Uri photoUri) {
+        super(context, parsedResult, result);//, photoUri);
     }
 
     @Override

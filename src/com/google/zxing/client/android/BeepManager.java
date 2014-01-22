@@ -13,8 +13,6 @@
 
 package com.google.zxing.client.android;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -25,13 +23,14 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.io.IOException;
+
 import com.github.barcodeeye.R;
 
 /**
  * Manages beeps and vibrations for {@link CaptureActivity}.
  */
-public final class BeepManager implements MediaPlayer.OnCompletionListener,
-        MediaPlayer.OnErrorListener {
+final class BeepManager implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 
     private static final String TAG = BeepManager.class.getSimpleName();
 
@@ -43,17 +42,16 @@ public final class BeepManager implements MediaPlayer.OnCompletionListener,
     private boolean playBeep;
     private boolean vibrate;
 
-    public BeepManager(Activity activity) {
+    BeepManager(Activity activity) {
         this.activity = activity;
         this.mediaPlayer = null;
         updatePrefs();
     }
 
-    public synchronized void updatePrefs() {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(activity);
+    synchronized void updatePrefs() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
         playBeep = shouldBeep(prefs, activity);
-        vibrate = false;
+        vibrate = prefs.getBoolean(PreferencesActivity.KEY_VIBRATE, false);
         if (playBeep && mediaPlayer == null) {
             // The volume on STREAM_SYSTEM is not adjustable, and users found it too loud,
             // so we now play on the music stream.
@@ -62,24 +60,21 @@ public final class BeepManager implements MediaPlayer.OnCompletionListener,
         }
     }
 
-    public synchronized void playBeepSoundAndVibrate() {
+    synchronized void playBeepSoundAndVibrate() {
         if (playBeep && mediaPlayer != null) {
             mediaPlayer.start();
         }
         if (vibrate) {
-            Vibrator vibrator = (Vibrator) activity
-                    .getSystemService(Context.VIBRATOR_SERVICE);
+            Vibrator vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
             vibrator.vibrate(VIBRATE_DURATION);
         }
     }
 
     private static boolean shouldBeep(SharedPreferences prefs, Context activity) {
-        // TODO: Make it configurable
-        boolean shouldPlayBeep = true;
+        boolean shouldPlayBeep = prefs.getBoolean(PreferencesActivity.KEY_PLAY_BEEP, true);
         if (shouldPlayBeep) {
             // See if sound settings overrides this
-            AudioManager audioService = (AudioManager) activity
-                    .getSystemService(Context.AUDIO_SERVICE);
+            AudioManager audioService = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
             if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
                 shouldPlayBeep = false;
             }
@@ -93,11 +88,9 @@ public final class BeepManager implements MediaPlayer.OnCompletionListener,
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnErrorListener(this);
 
-        AssetFileDescriptor file = activity.getResources().openRawResourceFd(
-                R.raw.beep);
+        AssetFileDescriptor file = activity.getResources().openRawResourceFd(R.raw.beep);
         try {
-            mediaPlayer.setDataSource(file.getFileDescriptor(),
-                    file.getStartOffset(), file.getLength());
+            mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
             file.close();
             mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
             mediaPlayer.prepare();

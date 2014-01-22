@@ -16,16 +16,16 @@
 
 package com.google.zxing.client.android.result.supplement;
 
+import android.content.Context;
+import android.widget.TextView;
+import com.google.zxing.client.android.HttpHelper;
+import com.google.zxing.client.android.history.HistoryManager;
+import com.github.barcodeeye.R;
+import com.google.zxing.client.result.URIParsedResult;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import android.content.Context;
-import android.widget.TextView;
-
-import com.github.barcodeeye.R;
-import com.google.zxing.client.android.HttpHelper;
-import com.google.zxing.client.result.URIParsedResult;
 
 final class URIResultInfoRetriever extends SupplementalInfoRetriever {
 
@@ -34,8 +34,8 @@ final class URIResultInfoRetriever extends SupplementalInfoRetriever {
   private final URIParsedResult result;
   private final String redirectString;
 
-  URIResultInfoRetriever(TextView textView, URIParsedResult result, Context context) {
-    super(textView);
+  URIResultInfoRetriever(TextView textView, URIParsedResult result, HistoryManager historyManager, Context context) {
+    super(textView, historyManager);
     redirectString = context.getString(R.string.msg_redirect);
     this.result = result;
   }

@@ -13,7 +13,7 @@ import com.google.zxing.Result;
 import com.google.zxing.client.result.ISBNParsedResult;
 import com.google.zxing.client.result.ParsedResult;
 
-public class IsbnResultHandler extends ResultHandler<ISBNParsedResult> {
+public class ISBNResultHandler extends ResultHandler<ISBNParsedResult> {
     public static final HashMap<String, String> PRODUCT_SEARCH_ENDPOINTS = new HashMap<String, String>();
 
     static {
@@ -22,9 +22,9 @@ public class IsbnResultHandler extends ResultHandler<ISBNParsedResult> {
         PRODUCT_SEARCH_ENDPOINTS.put("eBay", "http://www.ebay.com/sch/i.html?_nkw={CODE}");
     }
 
-    public IsbnResultHandler(Context context, ISBNParsedResult parsedResult,
-            Result result, Uri photoUri) {
-        super(context, parsedResult, result, photoUri);
+    public ISBNResultHandler(Context context, ISBNParsedResult parsedResult,
+            Result result) {//, Uri photoUri) {
+        super(context, parsedResult, result);//, photoUri);
     }
 
     @Override

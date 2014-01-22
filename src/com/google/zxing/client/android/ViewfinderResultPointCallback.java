@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 ZXing authors
+ * Copyright (C) 2009 ZXing authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package com.google.zxing.client.android.encode;
+package com.google.zxing.client.android;
 
-/**
- * Encapsulates some simple formatting logic, to aid refactoring in {@link ContactEncoder}.
- *
- * @author Sean Owen
- */
-interface Formatter {
-  
-  /**
-   * @param value value to format
-   * @param index index of value in a list of values to be formatted
-   * @return formatted value
-   */
-  CharSequence format(CharSequence value, int index);
-  
+import com.google.zxing.ResultPoint;
+import com.google.zxing.ResultPointCallback;
+
+final class ViewfinderResultPointCallback implements ResultPointCallback {
+
+  private final ViewfinderView viewfinderView;
+
+  ViewfinderResultPointCallback(ViewfinderView viewfinderView) {
+    this.viewfinderView = viewfinderView;
+  }
+
+  @Override
+  public void foundPossibleResultPoint(ResultPoint point) {
+    viewfinderView.addPossibleResultPoint(point);
+  }
+
 }

@@ -15,7 +15,7 @@ public class LaunchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launch);
+        setContentView(R.layout.launch);
 
         // delayed camera activity
         // see: https://code.google.com/p/google-glass-api/issues/detail?id=259

@@ -13,15 +13,15 @@
 
 package com.google.zxing.client.android;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Handles any locale-specific logic for the client.
@@ -86,11 +86,9 @@ public final class LocaleManager {
         GOOGLE_PRODUCT_SEARCH_COUNTRY_TLD.put("AU", "com.au"); // AUSTRALIA
         //GOOGLE_PRODUCT_SEARCH_COUNTRY_TLD.put(Locale.CHINA.getCountry(), "cn");
         GOOGLE_PRODUCT_SEARCH_COUNTRY_TLD.put(Locale.FRANCE.getCountry(), "fr");
-        GOOGLE_PRODUCT_SEARCH_COUNTRY_TLD
-                .put(Locale.GERMANY.getCountry(), "de");
+        GOOGLE_PRODUCT_SEARCH_COUNTRY_TLD.put(Locale.GERMANY.getCountry(), "de");
         GOOGLE_PRODUCT_SEARCH_COUNTRY_TLD.put(Locale.ITALY.getCountry(), "it");
-        GOOGLE_PRODUCT_SEARCH_COUNTRY_TLD.put(Locale.JAPAN.getCountry(),
-                "co.jp");
+        GOOGLE_PRODUCT_SEARCH_COUNTRY_TLD.put(Locale.JAPAN.getCountry(), "co.jp");
         GOOGLE_PRODUCT_SEARCH_COUNTRY_TLD.put("NL", "nl"); // NETHERLANDS
         GOOGLE_PRODUCT_SEARCH_COUNTRY_TLD.put("ES", "es"); // SPAIN
         GOOGLE_PRODUCT_SEARCH_COUNTRY_TLD.put("CH", "ch"); // SWITZERLAND
@@ -103,12 +101,10 @@ public final class LocaleManager {
      */
     private static final Map<String, String> GOOGLE_BOOK_SEARCH_COUNTRY_TLD = GOOGLE_COUNTRY_TLD;
 
-    private static final Collection<String> TRANSLATED_HELP_ASSET_LANGUAGES = Arrays
-            .asList("de", "en", "es", "fr", "it", "ja", "ko", "nl", "pt", "ru",
-                    "zh-rCN", "zh-rTW");
+    private static final Collection<String> TRANSLATED_HELP_ASSET_LANGUAGES =
+        Arrays.asList("de", "en", "es", "fr", "it", "ja", "ko", "nl", "pt", "ru", "zh-rCN", "zh-rTW", "zh-rHK");
 
-    private LocaleManager() {
-    }
+    private LocaleManager() {}
 
     /**
      * @return country-specific TLD suffix appropriate for the current default
@@ -121,7 +117,6 @@ public final class LocaleManager {
 
     /**
      * The same as above, but specifically for Google Product Search.
-     *
      * @return The top-level domain to use.
      */
     public static String getProductSearchCountryTLD(Context context) {
@@ -130,7 +125,6 @@ public final class LocaleManager {
 
     /**
      * The same as above, but specifically for Google Book Search.
-     *
      * @return The top-level domain to use.
      */
     public static String getBookSearchCountryTLD(Context context) {
@@ -139,14 +133,12 @@ public final class LocaleManager {
 
     /**
      * Does a given URL point to Google Book Search, regardless of domain.
-     *
      * @param url
      *            The address to check.
      * @return True if this is a Book Search URL.
      */
     public static boolean isBookSearchUrl(String url) {
-        return url.startsWith("http://google.com/books")
-                || url.startsWith("http://books.google.");
+        return url.startsWith("http://google.com/books") || url.startsWith("http://books.google.");
     }
 
     private static String getSystemCountry() {
@@ -169,8 +161,7 @@ public final class LocaleManager {
 
     public static String getTranslatedAssetLanguage() {
         String language = getSystemLanguage();
-        return TRANSLATED_HELP_ASSET_LANGUAGES.contains(language) ? language
-                : DEFAULT_LANGUAGE;
+        return TRANSLATED_HELP_ASSET_LANGUAGES.contains(language) ? language : DEFAULT_LANGUAGE;
     }
 
     private static String doGetTLD(Map<String, String> map, Context context) {
@@ -179,8 +170,12 @@ public final class LocaleManager {
     }
 
     public static String getCountry(Context context) {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences(context);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String countryOverride = prefs.getString(PreferencesActivity.KEY_SEARCH_COUNTRY, null);
+        if (countryOverride != null && !countryOverride.isEmpty() && !"-".equals(countryOverride)) {
+          return countryOverride;
+        }
         return getSystemCountry();
     }
+
 }

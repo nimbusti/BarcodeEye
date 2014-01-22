@@ -64,6 +64,8 @@ public final class OpenCameraInterface {
                     camera = Camera.open(0);
                 }
             } catch (RuntimeException e) {
+                // Barcode Scanner has seen crashes in the wild of this variety:
+                // java.?lang.?RuntimeException: Fail to connect to camera service
                 Log.w(TAG, "RuntimeException: " + e.getMessage());
             }
         }

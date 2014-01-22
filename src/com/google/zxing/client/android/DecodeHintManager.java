@@ -31,7 +31,7 @@ import com.google.zxing.DecodeHintType;
 /**
  * @author Lachezar Dobrev
  */
-public final class DecodeHintManager {
+final class DecodeHintManager {
 
   private static final String TAG = DecodeHintManager.class.getSimpleName();
 

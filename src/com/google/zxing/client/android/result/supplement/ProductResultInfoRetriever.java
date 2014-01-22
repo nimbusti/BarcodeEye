@@ -16,18 +16,18 @@
 
 package com.google.zxing.client.android.result.supplement;
 
+import android.content.Context;
+import android.text.Html;
+import android.widget.TextView;
+import com.google.zxing.client.android.HttpHelper;
+import com.github.barcodeeye.R;
+import com.google.zxing.client.android.history.HistoryManager;
+import com.google.zxing.client.android.LocaleManager;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import android.content.Context;
-import android.text.Html;
-import android.widget.TextView;
-
-import com.github.barcodeeye.R;
-import com.google.zxing.client.android.HttpHelper;
-import com.google.zxing.client.android.LocaleManager;
 
 /**
  * <p>Retrieves product information from Google Product search.</p>
@@ -48,8 +48,8 @@ final class ProductResultInfoRetriever extends SupplementalInfoRetriever {
   private final String source;
   private final Context context;
 
-  ProductResultInfoRetriever(TextView textView, String productID, Context context) {
-    super(textView);
+  ProductResultInfoRetriever(TextView textView, String productID, HistoryManager historyManager, Context context) {
+    super(textView, historyManager);
     this.productID = productID;
     this.source = context.getString(R.string.msg_google_product);
     this.context = context;

@@ -16,14 +16,14 @@
 
 package com.google.zxing.client.android.result.supplement;
 
+import android.widget.TextView;
+import com.google.zxing.client.android.HttpHelper;
+import com.google.zxing.client.android.history.HistoryManager;
+import com.google.zxing.client.result.URIParsedResult;
+
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import android.widget.TextView;
-
-import com.google.zxing.client.android.HttpHelper;
-import com.google.zxing.client.result.URIParsedResult;
 
 /**
  * Retrieves the title of a web page as supplemental info.
@@ -37,8 +37,8 @@ final class TitleRetriever extends SupplementalInfoRetriever {
 
   private final String httpUrl;
 
-  TitleRetriever(TextView textView, URIParsedResult result) {
-    super(textView);
+  TitleRetriever(TextView textView, URIParsedResult result, HistoryManager historyManager) {
+    super(textView, historyManager);
     this.httpUrl = result.getURI();
   }
 

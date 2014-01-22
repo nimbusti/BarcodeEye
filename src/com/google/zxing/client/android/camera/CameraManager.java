@@ -13,8 +13,6 @@
 
 package com.google.zxing.client.android.camera;
 
-import java.io.IOException;
-
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -25,6 +23,8 @@ import android.view.SurfaceHolder;
 
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.client.android.camera.open.OpenCameraInterface;
+
+import java.io.IOException;
 
 /**
  * This object wraps the Camera service object and expects to be the only one
@@ -77,8 +77,7 @@ public final class CameraManager {
      *             Indicates the camera driver failed to open.
      * @throws InterruptedException
      */
-    public synchronized void openDriver(SurfaceHolder holder)
-            throws IOException, InterruptedException {
+    public synchronized void openDriver(SurfaceHolder holder) throws IOException, InterruptedException {
         Camera theCamera = camera;
         if (theCamera == null) {
             theCamera = OpenCameraInterface.open();
@@ -93,24 +92,20 @@ public final class CameraManager {
             initialized = true;
             configManager.initFromCameraParameters(theCamera);
             if (requestedFramingRectWidth > 0 && requestedFramingRectHeight > 0) {
-                setManualFramingRect(requestedFramingRectWidth,
-                        requestedFramingRectHeight);
+                setManualFramingRect(requestedFramingRectWidth, requestedFramingRectHeight);
                 requestedFramingRectWidth = 0;
                 requestedFramingRectHeight = 0;
             }
         }
 
         Camera.Parameters parameters = theCamera.getParameters();
-        String parametersFlattened = parameters == null ? null : parameters
-                .flatten(); // Save these, temporarily
+        String parametersFlattened = parameters == null ? null : parameters.flatten(); // Save these, temporarily
         try {
             configManager.setDesiredCameraParameters(theCamera, false);
         } catch (RuntimeException re) {
             // Driver failed
-            Log.w(TAG,
-                    "Camera rejected parameters. Setting only minimal safe-mode parameters");
-            Log.i(TAG, "Resetting to saved camera params: "
-                    + parametersFlattened);
+            Log.w(TAG, "Camera rejected parameters. Setting only minimal safe-mode parameters");
+            Log.i(TAG, "Resetting to saved camera params: " + parametersFlattened);
             // Reset:
             if (parametersFlattened != null) {
                 parameters = theCamera.getParameters();
@@ -120,8 +115,7 @@ public final class CameraManager {
                     configManager.setDesiredCameraParameters(theCamera, true);
                 } catch (RuntimeException re2) {
                     // Well, darn. Give up
-                    Log.w(TAG,
-                            "Camera rejected even safe-mode parameters! No configuration");
+                    Log.w(TAG, "Camera rejected even safe-mode parameters! No configuration");
                 }
             }
         }
@@ -232,22 +226,18 @@ public final class CameraManager {
                 return null;
             }
 
-            int width = findDesiredDimensionInRange(screenResolution.x,
-                    MIN_FRAME_WIDTH, MAX_FRAME_WIDTH);
-            int height = findDesiredDimensionInRange(screenResolution.y,
-                    MIN_FRAME_HEIGHT, MAX_FRAME_HEIGHT);
+            int width = findDesiredDimensionInRange(screenResolution.x, MIN_FRAME_WIDTH, MAX_FRAME_WIDTH);
+            int height = findDesiredDimensionInRange(screenResolution.y, MIN_FRAME_HEIGHT, MAX_FRAME_HEIGHT);
 
             int leftOffset = (screenResolution.x - width) / 2;
             int topOffset = (screenResolution.y - height) / 2;
-            framingRect = new Rect(leftOffset, topOffset, leftOffset + width,
-                    topOffset + height);
+            framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
             Log.d(TAG, "Calculated framing rect: " + framingRect);
         }
         return framingRect;
     }
 
-    private static int findDesiredDimensionInRange(int resolution, int hardMin,
-            int hardMax) {
+    private static int findDesiredDimensionInRange(int resolution, int hardMin, int hardMax) {
         int dim = 5 * resolution / 8; // Target 5/8 of each dimension
         if (dim < hardMin) {
             return hardMin;
@@ -306,8 +296,7 @@ public final class CameraManager {
             }
             int leftOffset = (screenResolution.x - width) / 2;
             int topOffset = (screenResolution.y - height) / 2;
-            framingRect = new Rect(leftOffset, topOffset, leftOffset + width,
-                    topOffset + height);
+            framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
             Log.d(TAG, "Calculated manual framing rect: " + framingRect);
             framingRectInPreview = null;
         } else {
@@ -329,15 +318,14 @@ public final class CameraManager {
      *            The height of the image.
      * @return A PlanarYUVLuminanceSource instance.
      */
-    public PlanarYUVLuminanceSource buildLuminanceSource(byte[] data,
-            int width, int height) {
+    public PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height) {
         Rect rect = getFramingRectInPreview();
         if (rect == null) {
             return null;
         }
         // Go ahead and assume it's YUV rather than die.
-        return new PlanarYUVLuminanceSource(data, width, height, rect.left,
-                rect.top, rect.width(), rect.height(), false);
+        return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
+                                            rect.width(), rect.height(), false);
     }
 
 }

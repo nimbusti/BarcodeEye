@@ -16,15 +16,7 @@
 
 package com.google.zxing.client.android;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Map;
-
 import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.util.Log;
 
 import com.github.barcodeeye.R;
 import com.google.zxing.BinaryBitmap;
@@ -35,7 +27,16 @@ import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
-public final class DecodeHandler extends Handler {
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
+
+import java.io.ByteArrayOutputStream;
+import java.util.Map;
+
+final class DecodeHandler extends Handler {
 
   private static final String TAG = DecodeHandler.class.getSimpleName();
 
@@ -54,11 +55,14 @@ public final class DecodeHandler extends Handler {
     if (!running) {
       return;
     }
-    if (message.what == R.id.decode) {
+    switch (message.what) {
+      case R.id.decode:
         decode((byte[]) message.obj, message.arg1, message.arg2);
-    } else if (message.what == R.id.quit) {
+        break;
+      case R.id.quit:
         running = false;
         Looper.myLooper().quit();
+        break;
     }
   }
 
@@ -111,7 +115,7 @@ public final class DecodeHandler extends Handler {
     int height = source.getThumbnailHeight();
     Bitmap bitmap = Bitmap.createBitmap(pixels, 0, width, width, height, Bitmap.Config.ARGB_8888);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
     bundle.putByteArray(DecodeThread.BARCODE_BITMAP, out.toByteArray());
     bundle.putFloat(DecodeThread.BARCODE_SCALED_FACTOR, (float) width / source.getWidth());
   }

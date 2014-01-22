@@ -13,7 +13,12 @@ import com.google.zxing.Result;
 import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.ProductParsedResult;
 
-public class ProductResultHandler extends ResultHandler<ProductParsedResult> {
+/**
+ * Handles generic products which are not books.
+ *
+ * @author dswitkin@google.com (Daniel Switkin)
+ */
+public final class ProductResultHandler extends ResultHandler<ProductParsedResult> {
 
     public static final HashMap<String, String> PRODUCT_SEARCH_ENDPOINTS = new HashMap<String, String>();
 
@@ -23,9 +28,8 @@ public class ProductResultHandler extends ResultHandler<ProductParsedResult> {
         PRODUCT_SEARCH_ENDPOINTS.put("eBay", "http://www.ebay.com/sch/i.html?_nkw={CODE}");
     }
 
-    public ProductResultHandler(Context context, ProductParsedResult parsedResult,
-            Result result, Uri photoUri) {
-        super(context, parsedResult, result, photoUri);
+    public ProductResultHandler(Context context, ProductParsedResult parsedResult, Result result) {//, Uri photoUri) {
+        super(context, parsedResult, result);//, photoUri);
     }
 
     @Override

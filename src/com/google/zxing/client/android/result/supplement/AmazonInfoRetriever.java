@@ -22,15 +22,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 
+import android.content.Context;
+import android.widget.TextView;
+import com.google.zxing.client.android.HttpHelper;
+import com.google.zxing.client.android.LocaleManager;
+import com.google.zxing.client.android.history.HistoryManager;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
-
-import android.content.Context;
-import android.widget.TextView;
-
-import com.google.zxing.client.android.HttpHelper;
-import com.google.zxing.client.android.LocaleManager;
 
 /**
  * @author Sean Owen
@@ -44,8 +43,9 @@ final class AmazonInfoRetriever extends SupplementalInfoRetriever {
   AmazonInfoRetriever(TextView textView,
                       String type,
                       String productID,
+                      HistoryManager historyManager,
                       Context context) {
-    super(textView);
+    super(textView, historyManager);
     String country = LocaleManager.getCountry(context);
     if ("ISBN".equals(type) && !Locale.US.getCountry().equals(country)) {
       type = "EAN";

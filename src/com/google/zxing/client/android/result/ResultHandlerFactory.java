@@ -10,33 +10,39 @@ import com.google.zxing.client.result.ProductParsedResult;
 import com.google.zxing.client.result.ResultParser;
 import com.google.zxing.client.result.URIParsedResult;
 
+/**
+ * Manufactures Android-specific handlers based on the barcode content's type.
+ *
+ * @author dswitkin@google.com (Daniel Switkin)
+ */
 public final class ResultHandlerFactory {
+    private ResultHandlerFactory() {
+    }
 
-    public static ResultHandler<? extends ParsedResult> makeResultProcessor(
-            Context context, Result result, Uri photoUri) {
+    public static ResultHandler<? extends ParsedResult> makeResultHandler(Context context, Result rawResult) {//, Uri photoUri) {
 
-        ParsedResult parsedResult = ResultParser.parseResult(result);
+        ParsedResult result = ResultParser.parseResult(rawResult);
 
-        switch (parsedResult.getType()) {
+        switch (result.getType()) {
             case PRODUCT:
-                return new ProductResultHandler(context,
-                        (ProductParsedResult) parsedResult, result, photoUri);
+                return new ProductResultHandler(context, (ProductParsedResult) result, rawResult);//, photoUri);
             case URI:
-                return new UriResultHandler(context,
-                        (URIParsedResult) parsedResult, result, photoUri);
+                return new URIResultHandler(context, (URIParsedResult) result, rawResult);//, photoUri);
             case ISBN:
-                return new IsbnResultHandler(context,
-                        (ISBNParsedResult) parsedResult, result, photoUri);
-            case SMS:
+                return new ISBNResultHandler(context, (ISBNParsedResult) result, rawResult);//, photoUri);
+            case WIFI:
             case GEO:
             case TEL:
+            case SMS:
             case CALENDAR:
             case ADDRESSBOOK:
             case EMAIL_ADDRESS:
-            case WIFI:
                 // currently unsupported so we let them fall through
             default:
-                return new TextResultHandler(context, parsedResult, result, photoUri);
+                return new TextResultHandler(context, result, rawResult);//, photoUri);
         }
+    }
+    private static ParsedResult parseResult(Result rawResult) {
+      return ResultParser.parseResult(rawResult);
     }
 }
