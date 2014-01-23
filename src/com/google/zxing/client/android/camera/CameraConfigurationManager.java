@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.google.zxing.client.android.DeviceHelper;
 import com.google.zxing.client.android.PreferencesActivity;
 
 import java.util.ArrayList;
@@ -87,7 +88,9 @@ final class CameraConfigurationManager {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        //initializeTorch(parameters, prefs, safeMode);
+        if (!DeviceHelper.isGoogleGlass()) {
+          initializeTorch(parameters, prefs, safeMode);
+        }
 
         String focusMode = null;
         if (prefs.getBoolean(PreferencesActivity.KEY_AUTO_FOCUS, true)) {
@@ -123,7 +126,9 @@ final class CameraConfigurationManager {
 
         parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
         camera.setParameters(parameters);
-        googleGlassXE10WorkAround(camera);
+        if (DeviceHelper.isGoogleGlass()) {
+            googleGlassXE10WorkAround(camera);
+        }
 
         Camera.Parameters afterParameters = camera.getParameters();
         Camera.Size afterSize = afterParameters.getPreviewSize();
@@ -182,15 +187,15 @@ final class CameraConfigurationManager {
         Camera.Parameters parameters = camera.getParameters();
         doSetTorch(parameters, newSetting, false);
         camera.setParameters(parameters);
-        googleGlassXE10WorkAround(camera);
+        if (DeviceHelper.isGoogleGlass()) {
+            googleGlassXE10WorkAround(camera);
+        }
     }
 
-    /*
     private void initializeTorch(Camera.Parameters parameters, SharedPreferences prefs, boolean safeMode) {
       boolean currentSetting = FrontLightMode.readPref(prefs) == FrontLightMode.ON;
       doSetTorch(parameters, currentSetting, safeMode);
     }
-    */
 
     private void doSetTorch(Camera.Parameters parameters, boolean newSetting, boolean safeMode) {
         String flashMode;
@@ -207,34 +212,29 @@ final class CameraConfigurationManager {
         }
 
         /*
-         * SharedPreferences prefs =
-         * PreferenceManager.getDefaultSharedPreferences(context);
-         * if (!prefs.getBoolean(PreferencesActivity.KEY_DISABLE_EXPOSURE,
-         * false)) {
-         * if (!safeMode) {
-         * int minExposure = parameters.getMinExposureCompensation();
-         * int maxExposure = parameters.getMaxExposureCompensation();
-         * if (minExposure != 0 || maxExposure != 0) {
-         * float step = parameters.getExposureCompensationStep();
-         * int desiredCompensation;
-         * if (newSetting) {
-         * // Light on; set low exposue compensation
-         * desiredCompensation = Math.max((int) (MIN_EXPOSURE_COMPENSATION /
-         * step), minExposure);
-         * } else {
-         * // Light off; set high compensation
-         * desiredCompensation = Math.min((int) (MAX_EXPOSURE_COMPENSATION /
-         * step), maxExposure);
-         * }
-         * Log.i(TAG, "Setting exposure compensation to " + desiredCompensation
-         * + " / " + (step * desiredCompensation));
-         * parameters.setExposureCompensation(desiredCompensation);
-         * } else {
-         * Log.i(TAG, "Camera does not support exposure compensation");
-         * }
-         * }
-         * }
-         */
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!prefs.getBoolean(PreferencesActivity.KEY_DISABLE_EXPOSURE, false)) {
+          if (!safeMode) {
+            int minExposure = parameters.getMinExposureCompensation();
+            int maxExposure = parameters.getMaxExposureCompensation();
+            if (minExposure != 0 || maxExposure != 0) {
+              float step = parameters.getExposureCompensationStep();
+              int desiredCompensation;
+              if (newSetting) {
+                // Light on; set low exposue compensation
+                desiredCompensation = Math.max((int) (MIN_EXPOSURE_COMPENSATION / step), minExposure);
+              } else {
+                // Light off; set high compensation
+                desiredCompensation = Math.min((int) (MAX_EXPOSURE_COMPENSATION / step), maxExposure);
+              }
+              Log.i(TAG, "Setting exposure compensation to " + desiredCompensation + " / " + (step * desiredCompensation));
+              parameters.setExposureCompensation(desiredCompensation);
+            } else {
+              Log.i(TAG, "Camera does not support exposure compensation");
+            }
+          }
+        }
+        */
     }
 
     private Point findBestPreviewSizeValue(Camera.Parameters parameters, Point screenResolution) {
